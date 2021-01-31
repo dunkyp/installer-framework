@@ -10,6 +10,7 @@ include(../../installerfw.pri)
 }
 
 QT += network qml xml
+QT -= gui widgets
 # add the minimal plugin in static build to be able to start the installer headless with:
 # installer-binary --platform minimal
 # using QT += qpa_minimal_plugin would result in a minimal only compiled version
