@@ -28,8 +28,6 @@
 
 #include "constants.h"
 #include "commandlineparser.h"
-#include "installerbase.h"
-#include "sdkapp.h"
 #include "commandlineinterface.h"
 
 #include <errors.h>
@@ -143,68 +141,6 @@ int main(int argc, char *argv[])
         return help ? EXIT_SUCCESS : EXIT_FAILURE;
     }
 
-    if (parser.isSet(CommandLineOptions::scStartServerLong)) {
-        const QStringList arguments = parser.value(CommandLineOptions::scStartServerLong)
-            .split(QLatin1Char(','), QString::SkipEmptyParts);
-
-        QString socketName, key;
-        const QString mode = arguments.value(0);
-        bool argumentsValid = (mode.compare(QLatin1String(QInstaller::Protocol::ModeDebug),
-            Qt::CaseInsensitive) == 0);
-        if (argumentsValid) {
-            socketName = arguments.value(1, QLatin1String(QInstaller::Protocol::DefaultSocket));
-            key  = arguments.value(2, QLatin1String(QInstaller::Protocol::DefaultAuthorizationKey));
-        } else  {
-            socketName = arguments.value(1);
-            key =  arguments.value(2);
-        }
-
-        const bool production = (mode.compare(QLatin1String(QInstaller::Protocol::ModeProduction),
-            Qt::CaseInsensitive) == 0);
-        if (production) {
-            argumentsValid = (!key.isEmpty()) && (!socketName.isEmpty());
-#if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS)
-            /* In production mode detach child so that sudo waiting on us will terminate. */
-            pid_t child = fork();
-            if (child <= -1) {
-                std::cerr << "Fatal cannot fork and detach server." << std::endl;
-                return EXIT_FAILURE;
-            }
-
-            if (child != 0) {
-                return EXIT_SUCCESS;
-            }
-
-            ::setsid();
-#endif
-        }
-
-
-        SDKApp<QCoreApplication> app(argc, argv);
-        if (!argumentsValid) {
-            std::cout << qPrintable(parser.helpText()) << std::endl;
-            QString startServerStr = CommandLineOptions::scStartServerLong;
-            std::cerr << "Wrong argument(s) for option --" << startServerStr.toStdString() << std::endl;
-            return EXIT_FAILURE;
-        }
-
-#if defined(Q_OS_MACOS)
-        // make sure effective == real user id.
-        uid_t realUserId = getuid();
-        uid_t effectiveUserId = geteuid();
-        if (realUserId != effectiveUserId)
-            setreuid(effectiveUserId, -1);
-#endif
-
-        QInstaller::RemoteServer *server = new QInstaller::RemoteServer;
-        QObject::connect(server, &QInstaller::RemoteServer::destroyed, &app, &decltype(app)::quit);
-        server->init(socketName, key, (production ? QInstaller::Protocol::Mode::Production
-            : QInstaller::Protocol::Mode::Debug));
-
-        server->start();
-        return app.exec();
-    }
-
     try {
         QStringList optionNames = parser.optionNames();
 
@@ -283,7 +219,7 @@ int main(int argc, char *argv[])
             }
 #endif
         }
-        return InstallerBase(argc, argv).run();
+        return EXIT_FAILURE;
 
     } catch (const QInstaller::Error &e) {
         std::cerr << qPrintable(e.message()) << std::endl;

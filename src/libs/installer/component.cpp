@@ -46,10 +46,6 @@
 #include <QtCore/QRegExp>
 #include <QtCore/QTranslator>
 
-#include <QApplication>
-
-#include <QtUiTools/QUiLoader>
-
 #if QT_VERSION >= QT_VERSION_CHECK(5,14,0)
 #include <private/qv4engine_p.h>
 #else
@@ -621,9 +617,9 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
 */
 void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis)
 {
-    if (qobject_cast<QApplication*> (qApp) == 0)
-        return;
+    return;
 
+    #if 0
     QDirIterator it(directory.path(), uis, QDir::Files);
     while (it.hasNext()) {
         QFile file(it.next());
@@ -643,6 +639,7 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
         d->scriptEngine()->newQObject(widget);
         d->m_userInterfaces.insert(widget->objectName(), widget);
     }
+    #endif
 }
 
 /*!
@@ -753,7 +750,7 @@ QHash<QString, QVariantMap> Component::licenses() const
 */
 QWidget *Component::userInterface(const QString &name) const
 {
-    return d->m_userInterfaces.value(name).data();
+    return nullptr;
 }
 
 /*!
@@ -1573,9 +1570,9 @@ void Component::setLocalTempPath(const QString &tempLocalPath)
 void Component::updateModelData(const QString &key, const QString &data)
 {
     if (key == scVirtual) {
-        setData(data.toLower() == scTrue
-                ? d->m_core->virtualComponentsFont()
-                : QFont(), Qt::FontRole);
+        // setData(data.toLower() == scTrue
+        //         ? d->m_core->virtualComponentsFont()
+        //         : QFont(), Qt::FontRole);
         if (Component *const parent = parentComponent()) {
             parent->removeComponent(this);
             parent->appendComponent(this);

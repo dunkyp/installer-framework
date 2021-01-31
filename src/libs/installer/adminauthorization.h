@@ -29,7 +29,7 @@
 #ifndef ADMINAUTHORIZATION_H
 #define ADMINAUTHORIZATION_H
 
-#include <QWidget>
+#include <QStringList>
 
 namespace QInstaller {
 
@@ -37,7 +37,6 @@ class AdminAuthorization
 {
 public:
     static bool hasAdminRights();
-    static bool execute(QWidget *parent, const QString &programs, const QStringList &arguments);
 };
 
 } // namespace QInstaller

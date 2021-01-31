@@ -31,8 +31,6 @@
 #include "packagemanagercore.h"
 #include "packagemanagerproxyfactory.h"
 #include "productkeycheck.h"
-#include "proxycredentialsdialog.h"
-#include "serverauthenticationdialog.h"
 #include "settings.h"
 #include "testrepository.h"
 #include "globals.h"
@@ -336,66 +334,66 @@ void MetadataJob::xmlTaskFinished()
         m_xmlTask.waitForFinished();
         status = parseUpdatesXml(m_xmlTask.future().results());
     } catch (const AuthenticationRequiredException &e) {
-        if (e.type() == AuthenticationRequiredException::Type::Proxy) {
-            const QNetworkProxy proxy = e.proxy();
-            ProxyCredentialsDialog proxyCredentials(proxy);
-            qCWarning(QInstaller::lcInstallerInstallLog) << e.message();
+        // if (e.type() == AuthenticationRequiredException::Type::Proxy) {
+        //     const QNetworkProxy proxy = e.proxy();
+        //     ProxyCredentialsDialog proxyCredentials(proxy);
+        //     qCWarning(QInstaller::lcInstallerInstallLog) << e.message();
 
-            if (proxyCredentials.exec() == QDialog::Accepted) {
-                qCDebug(QInstaller::lcInstallerInstallLog) << "Retrying with new credentials ...";
-                PackageManagerProxyFactory *factory = m_core->proxyFactory();
+        //     if (proxyCredentials.exec() == QDialog::Accepted) {
+        //         qCDebug(QInstaller::lcInstallerInstallLog) << "Retrying with new credentials ...";
+        //         PackageManagerProxyFactory *factory = m_core->proxyFactory();
 
-                factory->setProxyCredentials(proxy, proxyCredentials.userName(),
-                                             proxyCredentials.password());
-                m_core->setProxyFactory(factory);
-                status = XmlDownloadRetry;
-            } else {
-                reset();
-                emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
-            }
-        } else if (e.type() == AuthenticationRequiredException::Type::Server) {
-            qCWarning(QInstaller::lcInstallerInstallLog) << e.message();
-            ServerAuthenticationDialog dlg(e.message(), e.taskItem());
-            if (dlg.exec() == QDialog::Accepted) {
-                Repository original = e.taskItem().value(TaskRole::UserRole)
-                    .value<Repository>();
-                Repository replacement = original;
-                replacement.setUsername(dlg.user());
-                replacement.setPassword(dlg.password());
+        //         factory->setProxyCredentials(proxy, proxyCredentials.userName(),
+        //                                      proxyCredentials.password());
+        //         m_core->setProxyFactory(factory);
+        //         status = XmlDownloadRetry;
+        //     } else {
+        //         reset();
+        //         emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
+        //     }
+        // } else if (e.type() == AuthenticationRequiredException::Type::Server) {
+        //     qCWarning(QInstaller::lcInstallerInstallLog) << e.message();
+        //     ServerAuthenticationDialog dlg(e.message(), e.taskItem());
+        //     if (dlg.exec() == QDialog::Accepted) {
+        //         Repository original = e.taskItem().value(TaskRole::UserRole)
+        //             .value<Repository>();
+        //         Repository replacement = original;
+        //         replacement.setUsername(dlg.user());
+        //         replacement.setPassword(dlg.password());
 
-                Settings &s = m_core->settings();
-                QSet<Repository> temporaries = s.temporaryRepositories();
-                if (temporaries.contains(original)) {
-                    temporaries.remove(original);
-                    temporaries.insert(replacement);
-                    s.addTemporaryRepositories(temporaries, true);
-                } else {
-                    QHash<QString, QPair<Repository, Repository> > update;
-                    update.insert(QLatin1String("replace"), qMakePair(original, replacement));
+        //         Settings &s = m_core->settings();
+        //         QSet<Repository> temporaries = s.temporaryRepositories();
+        //         if (temporaries.contains(original)) {
+        //             temporaries.remove(original);
+        //             temporaries.insert(replacement);
+        //             s.addTemporaryRepositories(temporaries, true);
+        //         } else {
+        //             QHash<QString, QPair<Repository, Repository> > update;
+        //             update.insert(QLatin1String("replace"), qMakePair(original, replacement));
 
-                    if (s.updateRepositoryCategories(update) == Settings::UpdatesApplied)
-                        qCDebug(QInstaller::lcDeveloperBuild) << "Repository categories updated.";
+        //             if (s.updateRepositoryCategories(update) == Settings::UpdatesApplied)
+        //                 qCDebug(QInstaller::lcDeveloperBuild) << "Repository categories updated.";
 
-                    if (s.updateDefaultRepositories(update) == Settings::UpdatesApplied
-                        || s.updateUserRepositories(update) == Settings::UpdatesApplied) {
-                            if (m_core->isMaintainer()) {
-                                bool gainedAdminRights = false;
-                                if (!m_core->directoryWritable(m_core->value(scTargetDir))) {
-                                    m_core->gainAdminRights();
-                                    gainedAdminRights = true;
-                                }
-                                m_core->writeMaintenanceConfigFiles();
-                                if (gainedAdminRights)
-                                    m_core->dropAdminRights();
-                            }
-                    }
-                }
-                status = XmlDownloadRetry;
-            } else {
-                reset();
-                emitFinishedWithError(QInstaller::DownloadError, tr("Authentication failed."));
-            }
-        }
+        //             if (s.updateDefaultRepositories(update) == Settings::UpdatesApplied
+        //                 || s.updateUserRepositories(update) == Settings::UpdatesApplied) {
+        //                     if (m_core->isMaintainer()) {
+        //                         bool gainedAdminRights = false;
+        //                         if (!m_core->directoryWritable(m_core->value(scTargetDir))) {
+        //                             m_core->gainAdminRights();
+        //                             gainedAdminRights = true;
+        //                         }
+        //                         m_core->writeMaintenanceConfigFiles();
+        //                         if (gainedAdminRights)
+        //                             m_core->dropAdminRights();
+        //                     }
+        //             }
+        //         }
+        //         status = XmlDownloadRetry;
+        //     } else {
+        //         reset();
+        //         emitFinishedWithError(QInstaller::DownloadError, tr("Authentication failed."));
+        //     }
+        // }
     } catch (const TaskException &e) {
         reset();
         emitFinishedWithError(QInstaller::DownloadError, e.message());

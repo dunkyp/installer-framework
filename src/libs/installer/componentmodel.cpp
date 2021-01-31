@@ -30,7 +30,6 @@
 
 #include "component.h"
 #include "packagemanagercore.h"
-#include <QIcon>
 
 namespace QInstaller {
 
@@ -77,20 +76,20 @@ class IconCache
 {
 public:
     IconCache() {
-        m_icons.insert(ComponentModelHelper::Install, QIcon(QLatin1String(":/install.png")));
-        m_icons.insert(ComponentModelHelper::Uninstall, QIcon(QLatin1String(":/uninstall.png")));
-        m_icons.insert(ComponentModelHelper::KeepInstalled, QIcon(QLatin1String(":/keepinstalled.png")));
-        m_icons.insert(ComponentModelHelper::KeepUninstalled, QIcon(QLatin1String(":/keepuninstalled.png")));
+        // m_icons.insert(ComponentModelHelper::Install, QIcon(QLatin1String(":/install.png")));
+        // m_icons.insert(ComponentModelHelper::Uninstall, QIcon(QLatin1String(":/uninstall.png")));
+        // m_icons.insert(ComponentModelHelper::KeepInstalled, QIcon(QLatin1String(":/keepinstalled.png")));
+        // m_icons.insert(ComponentModelHelper::KeepUninstalled, QIcon(QLatin1String(":/keepuninstalled.png")));
     }
 
-    QIcon icon(ComponentModelHelper::InstallAction action) const {
-        return m_icons.value(action);
-    }
-private:
-    QMap<ComponentModelHelper::InstallAction, QIcon> m_icons;
+    // QIcon icon(ComponentModelHelper::InstallAction action) const {
+//         return m_icons.value(action);
+//     }
+// private:
+//     QMap<ComponentModelHelper::InstallAction, QIcon> m_icons;
 };
 
-Q_GLOBAL_STATIC(IconCache, iconCache)
+//Q_GLOBAL_STATIC(IconCache, iconCache)
 
 /*!
     Constructs a component model with the given number of \a columns and \a core as parent.
@@ -201,7 +200,8 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
                 return QVariant();
             if (index.column() == ComponentModelHelper::ActionColumn) {
                 if (role == Qt::DecorationRole)
-                    return iconCache->icon(component->installAction());
+                    return tr("Nothing");
+                    //return iconCache->icon(component->installAction());
                 if (role == Qt::ToolTipRole) {
                     switch (component->installAction()) {
                     case ComponentModelHelper::Install:
@@ -229,7 +229,7 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
             return component->isExpandedByDefault();
         }
         if (component->isUnstable() && role == Qt::ForegroundRole) {
-            return QVariant(QColor(Qt::darkGray));
+            return QVariant(tr("test"));//)QColor(Qt::darkGray));
         }
         return component->data(role);
     }

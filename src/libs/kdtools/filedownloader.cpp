@@ -28,12 +28,10 @@
 
 #include "filedownloader_p.h"
 #include "filedownloaderfactory.h"
-#include "ui_authenticationdialog.h"
 
 #include "fileutils.h"
 #include "utils.h"
 
-#include <QDialog>
 #include <QDir>
 #include <QFile>
 #include <QtNetwork/QNetworkAccessManager>
@@ -1204,10 +1202,6 @@ KDUpdater::HttpDownloader::HttpDownloader(QObject *parent)
     : KDUpdater::FileDownloader(QLatin1String("http"), parent)
     , d(new Private(this))
 {
-#ifndef QT_NO_SSL
-    connect(&d->manager, &QNetworkAccessManager::sslErrors,
-            this, &HttpDownloader::onSslErrors);
-#endif
     connect(&d->manager, &QNetworkAccessManager::authenticationRequired,
             this, &HttpDownloader::onAuthenticationRequired);
     connect(&d->manager, &QNetworkAccessManager::networkAccessibleChanged,
@@ -1521,32 +1515,6 @@ void KDUpdater::HttpDownloader::onAuthenticationRequired(QNetworkReply *reply, Q
         d->m_authenticationCount++;
         authenticator->setUser(this->authenticator().user());
         authenticator->setPassword(this->authenticator().password());
-    } else if (d->m_authenticationCount == 1) {
-        // we failed to authenticate, ask for new credentials
-        QDialog dlg;
-        Ui::Dialog ui;
-        ui.setupUi(&dlg);
-        dlg.adjustSize();
-        ui.siteDescription->setText(tr("%1 at %2").arg(authenticator->realm()).arg(url().host()));
-
-        ui.userEdit->setText(this->authenticator().user());
-        ui.passwordEdit->setText(this->authenticator().password());
-
-        if (dlg.exec() == QDialog::Accepted) {
-            authenticator->setUser(ui.userEdit->text());
-            authenticator->setPassword(ui.passwordEdit->text());
-
-            // update the authenticator we used initially
-            QAuthenticator auth;
-            auth.setUser(ui.userEdit->text());
-            auth.setPassword(ui.passwordEdit->text());
-            emit authenticatorChanged(auth);
-        } else {
-            d->shutDown();
-            setDownloadAborted(tr("Authentication request canceled."));
-            emit downloadCanceled();
-        }
-        d->m_authenticationCount++;
     }
 }
 
@@ -1565,51 +1533,3 @@ void KDUpdater::HttpDownloader::onNetworkAccessibleChanged(QNetworkAccessManager
   }
 }
 
-#ifndef QT_NO_SSL
-
-#include "messageboxhandler.h"
-
-void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QSslError> &errors)
-{
-    Q_UNUSED(reply)
-    QString errorString;
-    foreach (const QSslError &error, errors) {
-        if (!errorString.isEmpty())
-            errorString += QLatin1String(", ");
-        errorString += error.errorString();
-    }
-    qCWarning(QInstaller::lcInstallerInstallLog) << errorString;
-
-    const QStringList arguments = QCoreApplication::arguments();
-    if (arguments.contains(QLatin1String("--script")) || arguments.contains(QLatin1String("Script"))
-        || ignoreSslErrors()) {
-            reply->ignoreSslErrors();
-            return;
-    }
-    // TODO: Remove above code once we have a proper implementation for message box handler supporting
-    // methods used in the following code, right now we return here cause the message box is not scriptable.
-
-    QMessageBox msgBox(MessageBoxHandler::currentBestSuitParent());
-    msgBox.setDetailedText(errorString);
-    msgBox.setIcon(QMessageBox::Warning);
-    msgBox.setWindowModality(Qt::WindowModal);
-    msgBox.setWindowTitle(tr("Secure Connection Failed"));
-    msgBox.setText(tr("There was an error during connection to: %1.").arg(url().toString()));
-    msgBox.setInformativeText(QString::fromLatin1("<ul><li>%1</li><li>%2</li></ul>").arg(tr("This could be "
-        "a problem with the server's configuration, or it could be someone trying to impersonate the "
-        "server."), tr("If you have connected to this server successfully in the past or trust this server, "
-        "the error may be temporary and you can try again.")));
-
-    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-    msgBox.setButtonText(QMessageBox::Yes, tr("Try again"));
-    msgBox.setDefaultButton(QMessageBox::Cancel);
-
-    if (msgBox.exec() == QMessageBox::Cancel) {
-        if (!d->aborted)
-            httpDone(true);
-    } else {
-        reply->ignoreSslErrors();
-        KDUpdater::FileDownloaderFactory::instance().setIgnoreSslErrors(true);
-    }
-}
-#endif

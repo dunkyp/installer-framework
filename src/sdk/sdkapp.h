@@ -46,15 +46,15 @@
 #include <runoncechecker.h>
 #include <globals.h>
 #include <errors.h>
+#include <messageboxhandler.h>
 
-#include <QApplication>
+//#include <QApplication>
 #include <QDir>
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QResource>
 #include <QLoggingCategory>
 #include <QUuid>
-#include <QMessageBox>
 #include <QMetaEnum>
 
 template<class T>

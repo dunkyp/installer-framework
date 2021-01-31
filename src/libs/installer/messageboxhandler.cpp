@@ -32,9 +32,6 @@
 
 #include <QtCore/QDebug>
 
-#include <QApplication>
-#include <QDialogButtonBox>
-#include <QPushButton>
 #include <QMetaEnum>
 
 /*!
@@ -118,15 +115,15 @@ MessageBoxHandler::MessageBoxHandler(QObject *parent)
     : QObject(parent)
     , m_defaultAction(MessageBoxHandler::AskUser)
 {
+    qDebug() << "I'm alive";
 }
-
 /*!
     Returns a message box handler instance.
 */
 MessageBoxHandler *MessageBoxHandler::instance()
 {
     if (m_instance == nullptr)
-        m_instance = new MessageBoxHandler(qApp);
+        m_instance = new MessageBoxHandler(nullptr);
     return m_instance;
 }
 
@@ -136,6 +133,7 @@ MessageBoxHandler *MessageBoxHandler::instance()
 */
 QWidget *MessageBoxHandler::currentBestSuitParent()
 {
+    #if 0
     if (qobject_cast<QApplication*> (qApp) == nullptr)
         return nullptr;
 
@@ -143,6 +141,8 @@ QWidget *MessageBoxHandler::currentBestSuitParent()
         return qApp->activeModalWidget();
 
     return qApp->activeWindow();
+    #endif
+    return nullptr;
 }
 
 /*!
@@ -362,37 +362,37 @@ QMessageBox::StandardButton MessageBoxHandler::autoReply(QMessageBox::StandardBu
     return QMessageBox::NoButton;
 }
 
-static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBox::Icon icon,
-    const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
-    QMessageBox::StandardButton defaultButton)
-{
-    QMessageBox msgBox(icon, title, text, QMessageBox::NoButton, parent);
-    QDialogButtonBox *buttonBox = msgBox.findChild<QDialogButtonBox *>();
-    Q_ASSERT(buttonBox != nullptr);
+// static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBox::Icon icon,
+//     const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
+//     QMessageBox::StandardButton defaultButton)
+// {
+//     QMessageBox msgBox(icon, title, text, QMessageBox::NoButton, parent);
+//     QDialogButtonBox *buttonBox = msgBox.findChild<QDialogButtonBox *>();
+//     Q_ASSERT(buttonBox != nullptr);
 
-    uint mask = QMessageBox::FirstButton;
-    while (mask <= QMessageBox::LastButton) {
-        uint sb = buttons & mask;
-        mask <<= 1;
-        if (!sb)
-            continue;
-        QPushButton *button = msgBox.addButton((QMessageBox::StandardButton)sb);
-        // Choose the first accept role as the default
-        if (msgBox.defaultButton())
-            continue;
-        if ((defaultButton == QMessageBox::NoButton
-            && buttonBox->buttonRole(button) == QDialogButtonBox::AcceptRole)
-            || (defaultButton != QMessageBox::NoButton && sb == uint(defaultButton))) {
-                msgBox.setDefaultButton(button);
-        }
-    }
-#if defined(Q_OS_MACOS)
-    msgBox.setWindowModality(Qt::WindowModal);
-#endif
-    if (msgBox.exec() == -1)
-        return QMessageBox::Cancel;
-    return msgBox.standardButton(msgBox.clickedButton());
-}
+//     uint mask = QMessageBox::FirstButton;
+//     while (mask <= QMessageBox::LastButton) {
+//         uint sb = buttons & mask;
+//         mask <<= 1;
+//         if (!sb)
+//             continue;
+//         QPushButton *button = msgBox.addButton((QMessageBox::StandardButton)sb);
+//         // Choose the first accept role as the default
+//         if (msgBox.defaultButton())
+//             continue;
+//         if ((defaultButton == QMessageBox::NoButton
+//             && buttonBox->buttonRole(button) == QDialogButtonBox::AcceptRole)
+//             || (defaultButton != QMessageBox::NoButton && sb == uint(defaultButton))) {
+//                 msgBox.setDefaultButton(button);
+//         }
+//     }
+// #if defined(Q_OS_MACOS)
+//     msgBox.setWindowModality(Qt::WindowModal);
+// #endif
+//     if (msgBox.exec() == -1)
+//         return QMessageBox::Cancel;
+//     return msgBox.standardButton(msgBox.clickedButton());
+// }
 
 QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messageType, QWidget *parent,
     const QString &identifier, const QString &title, const QString &text, QMessageBox::StandardButtons buttons,
@@ -401,6 +401,8 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
     QString availableAnswers = availableAnswerOptions(buttons);
     qCDebug(QInstaller::lcInstallerInstallLog).noquote() << identifier << ":" << title << ":" << text
         << availableAnswers;
+
+    qDebug() << "Asking a question";
 
     if (m_automaticAnswers.contains(identifier)) {
         QMessageBox::StandardButton selectedButton = m_automaticAnswers.value(identifier);
@@ -417,7 +419,8 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
         return selectedButton;
     }
 
-    if (qobject_cast<QApplication*> (qApp) == nullptr) {
+
+        qDebug() << "I'm not an application!!!" << parent;
         QMessageBox::StandardButton button = defaultButton;
         bool showAnswerInLog = true;
         if (m_defaultAction == AskUser) {
@@ -435,25 +438,25 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
                 << enumToString(QMessageBox::staticMetaObject, "StandardButton", button);
         }
         return button;
-    }
 
-    if (m_defaultAction == AskUser) {
-        switch (messageType) {
-            case criticalType:
-                return showNewMessageBox(parent, QMessageBox::Critical, title, text, buttons, defaultButton);
-            case informationType:
-                return showNewMessageBox(parent, QMessageBox::Information, title, text, buttons, defaultButton);
-            case questionType:
-                return showNewMessageBox(parent, QMessageBox::Question, title, text, buttons, defaultButton);
-            case warningType:
-                return showNewMessageBox(parent, QMessageBox::Warning, title, text, buttons, defaultButton);
-        }
-    } else {
-        return autoReply(buttons);
-    }
 
-    Q_ASSERT_X(false, Q_FUNC_INFO, "Something went really wrong.");
-    return defaultButton;
+    // if (m_defaultAction == AskUser) {
+    //     switch (messageType) {
+    //         case criticalType:
+    //             return showNewMessageBox(parent, QMessageBox::Critical, title, text, buttons, defaultButton);
+    //         case informationType:
+    //             return showNewMessageBox(parent, QMessageBox::Information, title, text, buttons, defaultButton);
+    //         case questionType:
+    //             return showNewMessageBox(parent, QMessageBox::Question, title, text, buttons, defaultButton);
+    //         case warningType:
+    //             return showNewMessageBox(parent, QMessageBox::Warning, title, text, buttons, defaultButton);
+    //     }
+    // } else {
+    //     return autoReply(buttons);
+    // }
+
+    // Q_ASSERT_X(false, Q_FUNC_INFO, "Something went really wrong.");
+    // return defaultButton;
 }
 
 bool MessageBoxHandler::askAnswerFromUser(QMessageBox::StandardButton &selectedButton,

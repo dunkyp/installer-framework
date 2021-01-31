@@ -35,7 +35,6 @@
 #include <QMetaEnum>
 #include <QQmlEngine>
 #include <QUuid>
-#include <QWizard>
 
 namespace QInstaller {
 
@@ -120,30 +119,8 @@ void QDesktopServicesProxy::findRecursion(const QString &path, const QString &pa
 
 GuiProxy::GuiProxy(ScriptEngine *engine, QObject *parent) :
     QObject(parent),
-    m_engine(engine),
-    m_gui(nullptr)
+    m_engine(engine)
 {
-}
-
-void GuiProxy::setPackageManagerGui(PackageManagerGui *gui)
-{
-    if (m_gui) {
-        disconnect(m_gui, &PackageManagerGui::interrupted, this, &GuiProxy::interrupted);
-        disconnect(m_gui, &PackageManagerGui::languageChanged, this, &GuiProxy::languageChanged);
-        disconnect(m_gui, &PackageManagerGui::finishButtonClicked, this, &GuiProxy::finishButtonClicked);
-        disconnect(m_gui, &PackageManagerGui::gotRestarted, this, &GuiProxy::gotRestarted);
-        disconnect(m_gui, &PackageManagerGui::settingsButtonClicked, this, &GuiProxy::settingsButtonClicked);
-    }
-
-    m_gui = gui;
-
-    if (m_gui) {
-        connect(m_gui, &PackageManagerGui::interrupted, this, &GuiProxy::interrupted);
-        connect(m_gui, &PackageManagerGui::languageChanged, this, &GuiProxy::languageChanged);
-        connect(m_gui, &PackageManagerGui::finishButtonClicked, this, &GuiProxy::finishButtonClicked);
-        connect(m_gui, &PackageManagerGui::gotRestarted, this, &GuiProxy::gotRestarted);
-        connect(m_gui, &PackageManagerGui::settingsButtonClicked, this, &GuiProxy::settingsButtonClicked);
-    }
 }
 
 /*!
@@ -152,9 +129,9 @@ void GuiProxy::setPackageManagerGui(PackageManagerGui *gui)
 */
 QJSValue GuiProxy::pageById(int id) const
 {
-    if (!m_gui)
+    //if (!m_gui)
         return QJSValue();
-    return m_engine->newQObject(m_gui->pageById(id));
+    //return m_engine->newQObject(m_gui->pageById(id));
 }
 
 /*!
@@ -163,9 +140,9 @@ QJSValue GuiProxy::pageById(int id) const
 */
 QJSValue GuiProxy::pageByObjectName(const QString &name) const
 {
-    if (!m_gui)
+    //if (!m_gui)
         return QJSValue();
-    return m_engine->newQObject(m_gui->pageByObjectName(name));
+    //return m_engine->newQObject(m_gui->pageByObjectName(name));
 }
 
 /*!
@@ -173,23 +150,23 @@ QJSValue GuiProxy::pageByObjectName(const QString &name) const
 */
 QJSValue GuiProxy::currentPageWidget() const
 {
-    if (!m_gui)
+    //if (!m_gui)
         return QJSValue();
-    return m_engine->newQObject(m_gui->currentPageWidget());
+    //return m_engine->newQObject(m_gui->currentPageWidget());
 }
 
 QJSValue GuiProxy::pageWidgetByObjectName(const QString &name) const
 {
-    if (!m_gui)
+    //if (!m_gui)
         return QJSValue();
-    return m_engine->newQObject(m_gui->pageWidgetByObjectName(name));
+    //return m_engine->newQObject(m_gui->pageWidgetByObjectName(name));
 }
 
 QString GuiProxy::defaultButtonText(int wizardButton) const
 {
-    if (!m_gui)
+    //if (!m_gui)
         return QString();
-    return m_gui->defaultButtonText(wizardButton);
+    //return m_gui->defaultButtonText(wizardButton);
 }
 
 /*!
@@ -198,8 +175,8 @@ QString GuiProxy::defaultButtonText(int wizardButton) const
 */
 void GuiProxy::clickButton(int wizardButton, int delayInMs)
 {
-    if (m_gui)
-        m_gui->clickButton(wizardButton, delayInMs);
+    //if (m_gui)
+//        m_gui->clickButton(wizardButton, delayInMs);
 }
 
 /*!
@@ -208,27 +185,27 @@ void GuiProxy::clickButton(int wizardButton, int delayInMs)
 */
 void GuiProxy::clickButton(const QString &objectName, int delayInMs) const
 {
-    if (m_gui)
-        m_gui->clickButton(objectName, delayInMs);
+    // if (m_gui)
+    //     m_gui->clickButton(objectName, delayInMs);
 }
 
 bool GuiProxy::isButtonEnabled(int wizardButton)
 {
-    if (!m_gui)
+    //if (!m_gui)
         return false;
-    return m_gui->isButtonEnabled(wizardButton);
+        //return m_gui->isButtonEnabled(wizardButton);
 }
 
 void GuiProxy::showSettingsButton(bool show)
 {
-    if (m_gui)
-        m_gui->showSettingsButton(show);
+    // if (m_gui)
+    //     m_gui->showSettingsButton(show);
 }
 
 void GuiProxy::setSettingsButtonEnabled(bool enable)
 {
-    if (m_gui)
-        m_gui->setSettingsButtonEnabled(enable);
+    // if (m_gui)
+    //     m_gui->setSettingsButtonEnabled(enable);
 }
 
 /*!
@@ -259,44 +236,58 @@ QList<QJSValue> GuiProxy::findChildren(QObject *parent, const QString &objectNam
 */
 void GuiProxy::setSilent(bool silent)
 {
+    #if 0
   if (m_gui)
       m_gui->setSilent(silent);
+  #endif
 }
 
 void GuiProxy::setTextItems(QObject *object, const QStringList &items)
 {
+    #if 0
     if (m_gui)
         m_gui->setTextItems(object, items);
+    #endif
 }
 
 void GuiProxy::cancelButtonClicked()
 {
+    #if 0
     if (m_gui)
         m_gui->cancelButtonClicked();
+    #endif
 }
 
 void GuiProxy::reject()
 {
+    #if 0
     if (m_gui)
         m_gui->reject();
+    #endif
 }
 
 void GuiProxy::rejectWithoutPrompt()
 {
+    #if 0
     if (m_gui)
         m_gui->rejectWithoutPrompt();
+    #endif
 }
 
 void GuiProxy::showFinishedPage()
 {
+    #if 0
     if (m_gui)
         m_gui->showFinishedPage();
+    #endif
 }
 
 void GuiProxy::setModified(bool value)
 {
+    #if 0
     if (m_gui)
         m_gui->setModified(value);
+    #endif
 }
 
 QFileDialogProxy::QFileDialogProxy(PackageManagerCore *core): m_core(core)
@@ -306,21 +297,21 @@ QFileDialogProxy::QFileDialogProxy(PackageManagerCore *core): m_core(core)
 QString QFileDialogProxy::getExistingDirectory(const QString &caption,
                                                const QString &dir, const QString &identifier)
 {
-    if (m_core->isCommandLineInstance()) {
+    //if (m_core->isCommandLineInstance()) {
         return getExistingFileOrDirectory(caption, identifier, true);
-    } else {
-        return QFileDialog::getExistingDirectory(0, caption, dir);
-    }
+    //} else {
+//        return QFileDialog::getExistingDirectory(0, caption, dir);
+  //  }
 }
 
 QString QFileDialogProxy::getOpenFileName(const QString &caption, const QString &dir,
                                           const QString &filter, const QString &identifier)
 {
-    if (m_core->isCommandLineInstance()) {
+    //if (m_core->isCommandLineInstance()) {
         return getExistingFileOrDirectory(caption, identifier, false);
-    } else {
-        return QFileDialog::getOpenFileName(0, caption, dir, filter);
-    }
+    //} else {
+//        return QFileDialog::getOpenFileName(0, caption, dir, filter);
+  //  }
 }
 
 QString QFileDialogProxy::getExistingFileOrDirectory(const QString &caption,
@@ -385,7 +376,7 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
     global.setProperty(QLatin1String("QInstaller"), generateQInstallerObject());
     global.setProperty(QLatin1String("buttons"), generateWizardButtonsObject());
     global.setProperty(QLatin1String("QMessageBox"), generateMessageBoxObject());
-    global.setProperty(QLatin1String("QDesktopServices"), generateDesktopServicesObject());
+    //global.setProperty(QLatin1String("QDesktopServices"), generateDesktopServicesObject());
 
     if (core) {
         setGuiQObject(core->guiObject());
@@ -579,7 +570,7 @@ QJSValue ScriptEngine::callScriptMethod(const QJSValue &scriptContext, const QSt
 
 void ScriptEngine::setGuiQObject(QObject *guiQObject)
 {
-    m_guiProxy->setPackageManagerGui(qobject_cast<PackageManagerGui*>(guiQObject));
+    //m_guiProxy->setPackageManagerGui(qobject_cast<PackageManagerGui*>(guiQObject));
 }
 
 
@@ -591,15 +582,15 @@ void ScriptEngine::setGuiQObject(QObject *guiQObject)
 QJSValue ScriptEngine::generateWizardButtonsObject()
 {
     QJSValue buttons = m_engine.newArray();
-    SETPROPERTY(buttons, BackButton, QWizard)
-    SETPROPERTY(buttons, NextButton, QWizard)
-    SETPROPERTY(buttons, CommitButton, QWizard)
-    SETPROPERTY(buttons, FinishButton, QWizard)
-    SETPROPERTY(buttons, CancelButton, QWizard)
-    SETPROPERTY(buttons, HelpButton, QWizard)
-    SETPROPERTY(buttons, CustomButton1, QWizard)
-    SETPROPERTY(buttons, CustomButton2, QWizard)
-    SETPROPERTY(buttons, CustomButton3, QWizard)
+    // SETPROPERTY(buttons, BackButton, QWizard)
+    // SETPROPERTY(buttons, NextButton, QWizard)
+    // SETPROPERTY(buttons, CommitButton, QWizard)
+    // SETPROPERTY(buttons, FinishButton, QWizard)
+    // SETPROPERTY(buttons, CancelButton, QWizard)
+    // SETPROPERTY(buttons, HelpButton, QWizard)
+    // SETPROPERTY(buttons, CustomButton1, QWizard)
+    // SETPROPERTY(buttons, CustomButton2, QWizard)
+    // SETPROPERTY(buttons, CustomButton3, QWizard)
     return buttons;
 }
 
@@ -630,31 +621,31 @@ QJSValue ScriptEngine::generateMessageBoxObject()
     return messageBox;
 }
 
-QJSValue ScriptEngine::generateDesktopServicesObject()
-{
-    QJSValue desktopServices = m_engine.newArray();
-    SETPROPERTY(desktopServices, DesktopLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, DocumentsLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, FontsLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, ApplicationsLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, MusicLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, MoviesLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, PicturesLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, TempLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, HomeLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, DataLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, CacheLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, GenericDataLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, RuntimeLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, ConfigLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, DownloadLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, GenericCacheLocation, QStandardPaths)
-    SETPROPERTY(desktopServices, GenericConfigLocation, QStandardPaths)
+// QJSValue ScriptEngine::generateDesktopServicesObject()
+// {
+//     QJSValue desktopServices = m_engine.newArray();
+//     SETPROPERTY(desktopServices, DesktopLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, DocumentsLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, FontsLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, ApplicationsLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, MusicLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, MoviesLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, PicturesLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, TempLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, HomeLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, DataLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, CacheLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, GenericDataLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, RuntimeLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, ConfigLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, DownloadLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, GenericCacheLocation, QStandardPaths)
+//     SETPROPERTY(desktopServices, GenericConfigLocation, QStandardPaths)
 
-    QJSValue object = m_engine.newQObject(new QDesktopServicesProxy(this));
-    object.setPrototype(desktopServices);   // attach the properties
-    return object;
-}
+//     QJSValue object = m_engine.newQObject(new QDesktopServicesProxy(this));
+//     object.setPrototype(desktopServices);   // attach the properties
+//     return object;
+// }
 
 QJSValue ScriptEngine::generateQInstallerObject()
 {

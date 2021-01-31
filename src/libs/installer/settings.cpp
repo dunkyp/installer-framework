@@ -36,8 +36,6 @@
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QStringList>
-#include <QtGui/QFontMetrics>
-#include <QtWidgets/QApplication>
 
 #include <QRegularExpression>
 #include <QXmlStreamReader>
@@ -454,17 +452,6 @@ QString Settings::titleColor() const
 static int lengthToInt(const QVariant &variant)
 {
     QString length = variant.toString().trimmed();
-    if (length.endsWith(QLatin1String("em"), Qt::CaseInsensitive)) {
-        length.chop(2);
-        return qRound(length.toDouble() * QApplication::fontMetrics().height());
-    }
-    if (length.endsWith(QLatin1String("ex"), Qt::CaseInsensitive)) {
-        length.chop(2);
-        return qRound(length.toDouble() * QApplication::fontMetrics().xHeight());
-    }
-    if (length.endsWith(QLatin1String("px"), Qt::CaseInsensitive)) {
-        length.chop(2);
-    }
     return length.toInt();
 }
 

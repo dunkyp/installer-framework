@@ -29,8 +29,6 @@
 
 #include "packagemanagercore.h"
 #include "packagemanagerproxyfactory.h"
-#include "proxycredentialsdialog.h"
-#include "serverauthenticationdialog.h"
 
 #include <QFile>
 #include <QRandomGenerator>
@@ -138,25 +136,25 @@ void TestRepository::downloadCompleted()
     } catch (const AuthenticationRequiredException &e) {
         m_timer.stop();
         if (e.type() == AuthenticationRequiredException::Type::Server) {
-            ServerAuthenticationDialog dlg(e.message(), e.taskItem());
-            if (dlg.exec() == QDialog::Accepted) {
-                m_repository.setUsername(dlg.user());
-                m_repository.setPassword(dlg.password());
-                QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
-            } else {
-                QMetaObject::invokeMethod(this, "doCancel", Qt::QueuedConnection);
-            }
+            // ServerAuthenticationDialog dlg(e.message(), e.taskItem());
+            // if (dlg.exec() == QDialog::Accepted) {
+            //     m_repository.setUsername(dlg.user());
+            //     m_repository.setPassword(dlg.password());
+            //     QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
+            // } else {
+            //     QMetaObject::invokeMethod(this, "doCancel", Qt::QueuedConnection);
+            // }
             return;
         } else if (e.type() == AuthenticationRequiredException::Type::Proxy) {
             const QNetworkProxy proxy = e.proxy();
-            ProxyCredentialsDialog proxyCredentials(proxy);
-            if (proxyCredentials.exec() == QDialog::Accepted) {
-                PackageManagerProxyFactory *factory = m_core->proxyFactory();
-                factory->setProxyCredentials(proxy, proxyCredentials.userName(),
-                    proxyCredentials.password());
-                m_core->setProxyFactory(factory);
-            }
-            QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
+            // ProxyCredentialsDialog proxyCredentials(proxy);
+            // if (proxyCredentials.exec() == QDialog::Accepted) {
+            //     PackageManagerProxyFactory *factory = m_core->proxyFactory();
+            //     factory->setProxyCredentials(proxy, proxyCredentials.userName(),
+            //         proxyCredentials.password());
+            //     m_core->setProxyFactory(factory);
+            // }
+            // QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
             return;
         } else {
             emitFinishedWithError(QInstaller::DownloadError, tr("Authentication failed."));

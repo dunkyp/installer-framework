@@ -25,7 +25,6 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#include <QTextDocument>
 #include <QMetaEnum>
 
 #include "globals.h"
@@ -99,9 +98,10 @@ QRegExp commaRegExp()
 */
 QString htmlToString(const QString &html)
 {
-    QTextDocument doc;
-    doc.setHtml(html);
-    return doc.toPlainText();
+    // QTextDocument doc;
+    // doc.setHtml(html);
+    // return doc.toPlainText();
+    return html;
 }
 
 /*!

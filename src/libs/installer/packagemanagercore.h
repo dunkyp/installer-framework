@@ -103,8 +103,8 @@ public:
     };
     Q_DECLARE_FLAGS(ComponentTypes, ComponentType)
 
-    static QFont virtualComponentsFont();
-    static void setVirtualComponentsFont(const QFont &font);
+    // static QFont virtualComponentsFont();
+    // static void setVirtualComponentsFont(const QFont &font);
 
     static bool virtualComponentsVisible();
     static void setVirtualComponentsVisible(bool visible);
@@ -375,11 +375,13 @@ Q_SIGNALS:
     void offlineGenerationFinished();
     void titleMessageChanged(const QString &title);
 
+    #if 0
     void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardPageRemovalRequested(QWidget *widget);
     void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page,
                                         int position);
     void wizardWidgetRemovalRequested(QWidget *widget);
+    #endif
     void wizardPageVisibilityChangeRequested(bool visible, int page);
     void setValidatorForCustomPageRequested(QInstaller::Component *component, const QString &name,
                                             const QString &callbackName);

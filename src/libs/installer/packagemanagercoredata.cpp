@@ -32,7 +32,6 @@
 #include "qsettingswrapper.h"
 #include "utils.h"
 
-#include <QDesktopServices>
 #include <QDir>
 #include <QRegExp>
 

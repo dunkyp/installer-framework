@@ -51,6 +51,8 @@ function Component() {
 }
 
 Component.prototype.installerLoaded = function () {
+    var result = QMessageBox.question("quit.question", "Installer", "Do you want to quit the installer?",
+                                  QMessageBox.Yes | QMessageBox.No);
     if (installer.addWizardPage(component, "TargetWidget", QInstaller.TargetDirectory)) {
         var widget = gui.pageWidgetByObjectName("DynamicTargetWidget");
         if (widget != null) {

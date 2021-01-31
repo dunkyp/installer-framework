@@ -40,10 +40,7 @@
 #include <QtCore/QThread>
 #include <QtCore/QUrl>
 #include <QtCore/QCoreApplication>
-#include <QImageReader>
 #include <QRandomGenerator>
-#include <QGuiApplication>
-#include <QScreen>
 
 #include <errno.h>
 
@@ -718,12 +715,12 @@ QString QInstaller::replacePath(const QString &path, const QString &before, cons
 */
 void QInstaller::replaceHighDpiImage(QString &imagePath)
 {
-    if (QGuiApplication::primaryScreen()->devicePixelRatio() >= 2 ) {
-        QFileInfo fi(imagePath);
-        QString highdpiPixmap = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + scHighDpi + fi.suffix();
-        if (QFileInfo::exists(highdpiPixmap))
-            imagePath = highdpiPixmap;
-    }
+    // if (QGuiApplication::primaryScreen()->devicePixelRatio() >= 2 ) {
+    //     QFileInfo fi(imagePath);
+    //     QString highdpiPixmap = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + scHighDpi + fi.suffix();
+    //     if (QFileInfo::exists(highdpiPixmap))
+    //         imagePath = highdpiPixmap;
+    // }
 }
 
 /*!

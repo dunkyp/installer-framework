@@ -31,12 +31,9 @@
 
 #include "component.h"
 #include "packagemanagercore.h"
-#include "packagemanagergui.h"
 #include "globals.h"
 
 #include <QDebug>
-#include <QDesktopServices>
-#include <QFileDialog>
 #include <QStandardPaths>
 
 namespace QInstaller {
@@ -108,7 +105,8 @@ public slots :
         QString urlToOpen = url;
         urlToOpen.replace(QLatin1String("\\\\"), QLatin1String("/"));
         urlToOpen.replace(QLatin1String("\\"), QLatin1String("/"));
-        return QDesktopServices::openUrl(QUrl::fromUserInput(urlToOpen));
+        return false;
+        //return QDesktopServices::openUrl(QUrl::fromUserInput(urlToOpen));
     }
     QString displayName(qint32 location) const {
         return QStandardPaths::displayName(QStandardPaths::StandardLocation(location));
@@ -132,7 +130,7 @@ class GuiProxy : public QObject
 
 public:
     GuiProxy(ScriptEngine *engine, QObject *parent);
-    void setPackageManagerGui(PackageManagerGui *gui);
+    //void setPackageManagerGui(PackageManagerGui *gui);
 
     Q_INVOKABLE QJSValue pageById(int id) const;
     Q_INVOKABLE QJSValue pageByObjectName(const QString &name) const;
@@ -171,7 +169,7 @@ public slots:
 
 private:
     ScriptEngine *m_engine;
-    PackageManagerGui *m_gui;
+    //PackageManagerGui *m_gui;
 };
 
 } // namespace QInstaller

@@ -2,7 +2,7 @@ TEMPLATE = lib
 TARGET = installer
 INCLUDEPATH += . ..
 
-CONFIG += staticlib
+CONFIG += lib
 
 include(../7zip/7zip.pri)
 include(../kdtools/kdtools.pri)
@@ -37,15 +37,13 @@ QT += \
     network \
     xml \
     concurrent \
-    widgets \
     core-private \
     qml-private
+QT -= widgets gui
 win32:QT += winextras
 
 HEADERS += packagemanagercore.h \
-    aspectratiolabel.h \
     packagemanagercore_p.h \
-    packagemanagergui.h \
     binaryformat.h \
     binaryformatengine.h \
     binaryformatenginehandler.h \
@@ -80,7 +78,6 @@ HEADERS += packagemanagercore.h \
     fakestopprocessforupdateoperation.h \
     progresscoordinator.h \
     minimumprogressoperation.h \
-    performinstallationform.h \
     messageboxhandler.h \
     licenseoperation.h \
     component_p.h \
@@ -97,7 +94,6 @@ HEADERS += packagemanagercore.h \
     graph.h \
     settingsoperation.h \
     testrepository.h \
-    packagemanagerpagefactory.h \
     abstracttask.h\
     abstractfiletask.h \
     copyfiletask.h \
@@ -125,8 +121,6 @@ HEADERS += packagemanagercore.h \
     installercalculator.h \
     uninstallercalculator.h \
     componentchecker.h \
-    proxycredentialsdialog.h \
-    serverauthenticationdialog.h \
     keepaliveobject.h \
     systeminfo.h \
     packagesource.h \
@@ -135,15 +129,12 @@ HEADERS += packagemanagercore.h \
     lib7z_extract.h \
     lib7z_list.h \
     repositorycategory.h \
-    componentselectionpage_p.h \
     commandlineparser.h \
     commandlineparser_p.h \
     printoutput.h
 
 SOURCES += packagemanagercore.cpp \
-    aspectratiolabel.cpp \
-    packagemanagercore_p.cpp \
-    packagemanagergui.cpp \
+        packagemanagercore_p.cpp \
     binaryformat.cpp \
     binaryformatengine.cpp \
     binaryformatenginehandler.cpp \
@@ -173,7 +164,6 @@ SOURCES += packagemanagercore.cpp \
     fakestopprocessforupdateoperation.cpp \
     progresscoordinator.cpp \
     minimumprogressoperation.cpp \
-    performinstallationform.cpp \
     messageboxhandler.cpp \
     licenseoperation.cpp \
     component_p.cpp \
@@ -190,7 +180,6 @@ SOURCES += packagemanagercore.cpp \
     globals.cpp \
     settingsoperation.cpp \
     testrepository.cpp \
-    packagemanagerpagefactory.cpp \
     abstractfiletask.cpp \
     copyfiletask.cpp \
     downloadfiletask.cpp \
@@ -209,13 +198,10 @@ SOURCES += packagemanagercore.cpp \
     installercalculator.cpp \
     uninstallercalculator.cpp \
     componentchecker.cpp \
-    proxycredentialsdialog.cpp \
-    serverauthenticationdialog.cpp \
     keepaliveobject.cpp \
     systeminfo.cpp \
     packagesource.cpp \
     repositorycategory.cpp \
-    componentselectionpage_p.cpp \
     commandlineparser.cpp \
     printoutput.cpp
 

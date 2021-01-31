@@ -1,7 +1,7 @@
 TEMPLATE = aux
 
 CONFIG += force_qt
-QT += core-private widgets concurrent network qml xml
+QT += core-private concurrent network qml xml
 
 CONFIG += force_independent
 QMAKE_DOCS_TARGETDIR = html

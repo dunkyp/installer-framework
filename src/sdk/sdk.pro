@@ -9,7 +9,7 @@ include(../../installerfw.pri)
     include($$SQUISH_PATH/qtbuiltinhook.pri)
 }
 
-QT += network qml xml widgets
+QT += network qml xml
 # add the minimal plugin in static build to be able to start the installer headless with:
 # installer-binary --platform minimal
 # using QT += qpa_minimal_plugin would result in a minimal only compiled version
@@ -95,19 +95,11 @@ exists($$LRELEASE) {
 FORMS += settingsdialog.ui
 
 HEADERS += \
-           tabcontroller.h \
-           installerbasecommons.h \
-           settingsdialog.h \
            sdkapp.h \
            commandlineinterface.h \
-           installerbase.h
 
 SOURCES = \
           main.cpp \
-          installerbase.cpp \
-          tabcontroller.cpp \
-          installerbasecommons.cpp \
-          settingsdialog.cpp \
           commandlineinterface.cpp
 
 win32 {

@@ -62,8 +62,6 @@
 #include <QtCore/QTextEncoder>
 #include <QtCore/QTextStream>
 
-#include <QDesktopServices>
-#include <QFileDialog>
 #include <QRegularExpression>
 
 #include "sysinfo.h"
@@ -429,8 +427,8 @@ using namespace QInstaller;
 */
 
 Q_GLOBAL_STATIC(QMutex, globalModelMutex);
-static QFont *sVirtualComponentsFont = nullptr;
-Q_GLOBAL_STATIC(QMutex, globalVirtualComponentsFontMutex);
+//static QFont *sVirtualComponentsFont = nullptr;
+//Q_GLOBAL_STATIC(QMutex, globalVirtualComponentsFontMutex);
 
 static bool sNoForceInstallation = false;
 static bool sNoDefaultInstallation = false;
@@ -626,7 +624,7 @@ void PackageManagerCore::autoRejectMessageBoxes()
 void PackageManagerCore::setMessageBoxAutomaticAnswer(const QString &identifier, int button)
 {
     MessageBoxHandler::instance()->setAutomaticAnswer(identifier,
-        static_cast<QMessageBox::Button>(button));
+        static_cast<QMessageBox::StandardButton>(button));
 }
 
 /*!
@@ -1263,34 +1261,34 @@ PackageManagerCore::~PackageManagerCore()
     RemoteClient::instance().setActive(false);
     RemoteClient::instance().destroy();
 
-    QMutexLocker _(globalVirtualComponentsFontMutex());
-    delete sVirtualComponentsFont;
-    sVirtualComponentsFont = nullptr;
+    //QMutexLocker _(globalVirtualComponentsFontMutex());
+    //delete sVirtualComponentsFont;
+    //sVirtualComponentsFont = nullptr;
 }
 
 /* static */
 /*!
     Returns the virtual components' font.
 */
-QFont PackageManagerCore::virtualComponentsFont()
-{
-    QMutexLocker _(globalVirtualComponentsFontMutex());
-    if (!sVirtualComponentsFont)
-        sVirtualComponentsFont = new QFont;
-    return *sVirtualComponentsFont;
-}
+// QFont PackageManagerCore::virtualComponentsFont()
+// {
+//     QMutexLocker _(globalVirtualComponentsFontMutex());
+//     if (!sVirtualComponentsFont)
+//         sVirtualComponentsFont = new QFont;
+//     return *sVirtualComponentsFont;
+// }
 
-/* static */
-/*!
-    Sets the virtual components' font to \a font.
-*/
-void PackageManagerCore::setVirtualComponentsFont(const QFont &font)
-{
-    QMutexLocker _(globalVirtualComponentsFontMutex());
-    if (sVirtualComponentsFont)
-        delete sVirtualComponentsFont;
-    sVirtualComponentsFont = new QFont(font);
-}
+// /* static */
+// /*!
+//     Sets the virtual components' font to \a font.
+// */
+// void PackageManagerCore::setVirtualComponentsFont(const QFont &font)
+// {
+//     QMutexLocker _(globalVirtualComponentsFontMutex());
+//     if (sVirtualComponentsFont)
+//         delete sVirtualComponentsFont;
+//     sVirtualComponentsFont = new QFont(font);
+// }
 
 /* static */
 /*!
@@ -1622,6 +1620,7 @@ bool PackageManagerCore::fetchPackagesTree(const PackagesList &packages, const L
 */
 bool PackageManagerCore::addWizardPage(Component *component, const QString &name, int page)
 {
+    #if 0
     if (!isCommandLineInstance()) {
         if (QWidget* const widget = component->userInterface(name)) {
             emit wizardPageInsertionRequested(widget, static_cast<WizardPage>(page));
@@ -1630,6 +1629,7 @@ bool PackageManagerCore::addWizardPage(Component *component, const QString &name
     } else {
         qCDebug(QInstaller::lcDeveloperBuild) << "Headless installation: skip wizard page addition: " << name;
     }
+    #endif
     return false;
 }
 
@@ -1646,6 +1646,7 @@ bool PackageManagerCore::addWizardPage(Component *component, const QString &name
 */
 bool PackageManagerCore::removeWizardPage(Component *component, const QString &name)
 {
+    #if 0
     if (!isCommandLineInstance()) {
         if (QWidget* const widget = component->userInterface(name)) {
             emit wizardPageRemovalRequested(widget);
@@ -1654,6 +1655,7 @@ bool PackageManagerCore::removeWizardPage(Component *component, const QString &n
     } else {
         qCDebug(QInstaller::lcDeveloperBuild) << "Headless installation: skip wizard page removal: " << name;
     }
+    #endif
     return false;
 }
 
@@ -1733,6 +1735,7 @@ void PackageManagerCore::deselectComponent(const QString &id)
 */
 bool PackageManagerCore::addWizardPageItem(Component *component, const QString &name, int page, int position)
 {
+    #if 0
     if (!isCommandLineInstance()) {
         if (QWidget* const widget = component->userInterface(name)) {
             emit wizardWidgetInsertionRequested(widget, static_cast<WizardPage>(page), position);
@@ -1741,6 +1744,7 @@ bool PackageManagerCore::addWizardPageItem(Component *component, const QString &
     } else {
         qCDebug(QInstaller::lcDeveloperBuild) << "Headless installation: skip wizard page item addition: " << name;
     }
+    #endif
     return false;
 }
 
@@ -1758,12 +1762,14 @@ bool PackageManagerCore::addWizardPageItem(Component *component, const QString &
 */
 bool PackageManagerCore::removeWizardPageItem(Component *component, const QString &name)
 {
+    #if 0
     if (!isCommandLineInstance()) {
         if (QWidget* const widget = component->userInterface(name)) {
             emit wizardWidgetRemovalRequested(widget);
             return true;
         }
     }
+    #endif
     return false;
 }
 

@@ -31,8 +31,6 @@
 #include "component.h"
 #include "packagemanagercore.h"
 
-#include <QWidget>
-
 namespace QInstaller {
 
 /*!
@@ -68,8 +66,8 @@ ComponentPrivate::~ComponentPrivate()
     // Use QPointer here instead of raw pointers. This is a requirement that needs to be met cause possible
     // Ui elements get added during component script run and might be destroyed by the package manager gui
     // before the actual component gets destroyed. Avoids a possible delete call on a dangling pointer.
-    foreach (const QPointer<QWidget> widget, m_userInterfaces)
-        delete widget.data();
+    // foreach (const QPointer<QWidget> widget, m_userInterfaces)
+    //     delete widget.data();
 }
 
 ScriptEngine *ComponentPrivate::scriptEngine() const
