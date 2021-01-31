@@ -41,6 +41,8 @@
 
 #include <iostream>
 
+#include <dlfcn.h>
+
 #if defined(Q_OS_MACOS) or defined(Q_OS_UNIX)
 #  include <unistd.h>
 #  include <sys/types.h>
@@ -219,7 +221,12 @@ int main(int argc, char *argv[])
             }
 #endif
         }
-        return EXIT_FAILURE;
+        void *handle = dlopen("libinstallerbase.so", RTLD_LAZY);
+	qDebug() << handle;
+	void (*run_name)(int argc, char **argv);
+        *(void**)(&run_name) = dlsym(handle, "run");
+	qDebug() << run_name;
+        run_name(argc, argv);
 
     } catch (const QInstaller::Error &e) {
         std::cerr << qPrintable(e.message()) << std::endl;

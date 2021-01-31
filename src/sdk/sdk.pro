@@ -109,6 +109,7 @@ win32 {
     RC_FILE = installerbase.rc
 }
 
+LIBS += -ldl
 macx:include(../../no_app_bundle.pri)
 
 target.path = $$[QT_INSTALL_BINS]
