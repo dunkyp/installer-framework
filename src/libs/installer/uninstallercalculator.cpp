@@ -104,7 +104,7 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
             foreach (Component *c, m_installedComponents) {
                 const QString replaces = c->value(scReplaces);
                 const QStringList possibleNames = replaces.split(QInstaller::commaRegExp(),
-                                                                 QString::SkipEmptyParts) << c->name();
+                                                                 Qt::SkipEmptyParts) << c->name();
                 foreach (const QString &possibleName, possibleNames) {
 
                     Component *cc = PackageManagerCore::componentByName(possibleName, m_installedComponents);

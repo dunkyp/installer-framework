@@ -130,7 +130,7 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
                 if (reader.isWhitespace())
                     continue;
                 arguments.append(reader.text().toString().split(QRegularExpression(QLatin1String("\\s+")),
-                    QString::SkipEmptyParts));
+                    Qt::SkipEmptyParts));
             }
             break;
             case QXmlStreamReader::EndElement: {
